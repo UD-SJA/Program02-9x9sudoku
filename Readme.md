@@ -5,7 +5,7 @@ pip install -r requirements.txt
 requirements.txt has all packages that have been used. Also, make sure to spell requirements.txt and locate its place correctly.
 
 Run the command in your terminal or command prompt.
-
+##
 Second, in the Visual Studio code's terminal, write:
 python app.py
 
