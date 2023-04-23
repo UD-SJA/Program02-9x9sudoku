@@ -1,43 +1,35 @@
 from typing import Tuple
-import numpy as n
+import numpy as np
 from flask import Flask, render_template, redirect, url_for, request, jsonify
 import GenerateSudoku as Gs
 import SolveSudoku as SS
 import requests
+from requests.exceptions import JSONDecodeError
 
 app = Flask(__name__)
 
-
 def rowList(item):
-
     items = item.replace("[", '')
-
     items = items.replace("]", '')
     items = items.replace("\"", '')
     items = items.split(",")
 
     row = list(map(int, items))
-    # print(type(row))
     return row
 
 
 def get_repo_stats() -> Tuple[int, int]:
-    '''
-    Returns a tuple of the number of stars and forks for this repo.
-    Format: (stars, forks)
-    '''
-    stats = requests.get('https://api.github.com/repos/Nktech-Official/Sudoku-Web-Game-flask').json()
-    return stats['stargazers_count'], stats['forks_count']
-
-
-# @app.route("/")
-# def Home():
-#     return render_template("index.html")
-
-
-@app.route("/googlee2dc31cef81dd8eb.html", methods=["POST", "GET"])
-def siteVerification():
-    return render_template("googlee2dc31cef81dd8eb.html")
+    try:
+        response = requests.get('https://api.github.com/repos/UD-SJA/Program02')
+        if response.status_code == 200:
+            stats = response.json()
+            return stats['stargazers_count'], stats['forks_count']
+        else:
+            print(f"Error: {response.status_code}")
+            return 0, 0
+    except JSONDecodeError:
+        print("Error: JSONDecodeError")
+        return 0, 0
 
 
 @app.route("/", methods=["POST", "GET"])
@@ -147,11 +139,9 @@ def SolveSudoku():
     row7 = rowList(request.form["row7"])
     row8 = rowList(request.form["row8"])
     row9 = rowList(request.form["row9"])
-    grid = n.array([row1, row2, row3, row4, row5, row6, row7, row8, row9])
-    # print(grid)
-    Solution = SS.main(grid)
-    # print(Solution)
-    # return ""
+    initial_grid = np.array([row1, row2, row3, row4, row5, row6, row7, row8, row9])
+    sudoku_instance = SS.Sudoku(initial_grid)
+    Solution, _ = sudoku_instance.solve()
     return jsonify(
         cell_A1=str(Solution[0, 0]),
         cell_A2=str(Solution[0, 1]),
