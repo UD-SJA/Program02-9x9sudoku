@@ -20,7 +20,7 @@ def rowList(item):
 
 def get_repo_stats() -> Tuple[int, int]:
     try:
-        response = requests.get('https://api.github.com/repos/UD-SJA/Program02')
+        response = requests.get('https://api.github.com/UD-SJA/Program02-9x9sudoku')
         if response.status_code == 200:
             stats = response.json()
             return stats['stargazers_count'], stats['forks_count']
