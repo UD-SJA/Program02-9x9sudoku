@@ -42,7 +42,7 @@ class Sudoku:
                     return False
                 for xk in self.neighbors[xi] - {xj}:
                     queue.append((xk, xi))
-        return True
+        return all(len(self.domains[v]) >= 1 for v in self.variables)
     
     def minimum_remaining_values(self, assignment):
        unassigned = [v for v in self.variables if v not in assignment]
@@ -107,15 +107,14 @@ class Sudoku:
 initial_grid = [
     [7, 0, 0, 4, 0, 0, 0, 8, 6],
     [0, 5, 1, 0, 8, 0, 4, 0, 0],
-	[0, 4, 0, 3, 0, 7, 0, 9, 0],
-	[3, 0, 9, 0, 0, 6, 1, 0, 0],
-	[0, 0, 0, 0, 2, 0, 0, 0, 0],
-	[0, 0, 4, 9, 0, 0, 7, 0, 8],
-	[0, 8, 0, 1, 0, 2, 0, 6, 0],
-	[0, 0, 6, 0, 5, 0, 9, 1, 0],
-	[2, 1, 0, 0, 0, 3, 0, 0, 5]
+    [0, 4, 0, 3, 0, 7, 0, 9, 0],
+    [3, 0, 9, 0, 0, 6, 1, 0, 0],
+    [0, 0, 0, 0, 2, 0, 0, 0, 0],
+    [0, 0, 4, 9, 0, 0, 7, 0, 8],
+    [0, 8, 0, 1, 0, 2, 0, 6, 0],
+    [0, 0, 6, 0, 5, 0, 9, 1, 0],
+    [2, 1, 0, 0, 0, 3, 0, 0, 5]
 ]
-
 
 sudoku = Sudoku(initial_grid)
 (solution, backtracks_count) = sudoku.solve()
@@ -125,5 +124,12 @@ sudoku.printing(solution)
 print("\nVariables:\n", sudoku.variables)
 print("\nDomains:\n", sudoku.domains)
 print("\nConstraints:\n", sudoku.constraints)
-
 print("\nBacktracks count:\n",backtracks_count)
+
+xi = (0, 1)  # Choose a specific variable xi
+xj = (0, 2)  # Choose a specific variable xj
+
+revised_result = sudoku.revise(xi, xj)
+
+print("\nBoolean result of the revise function:", revised_result)
+print("\nAll variables have at least one value left in their domains: ", sudoku.ac3())
